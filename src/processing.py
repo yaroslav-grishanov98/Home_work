@@ -1,21 +1,21 @@
-from typing import Any, Iterable
+from typing import Any, Iterable, List, Dict
 
 
-def filter_by_state(list_dictionary: list[dict], state_word: str = "EXECUTED") -> list[dict]:
+def filter_by_state(list_dictionary: List[Dict[str, Any]], state_word: str = "EXECUTED") -> List[Dict[str, Any]]:
     """Функция перебирает список словарей по ключу"""
 
-    dict_state = []
+    dict_state: List[Dict[str, Any]] = []
     for elem in list_dictionary:
         if elem["state"] == state_word:
             dict_state.append(elem)
     return dict_state
 
 
-def sort_by_date(data: Iterable[dict], reverse_order=True) -> list[dict]:
+def sort_by_date(data: Iterable[Dict[str, Any]], reverse_order: bool = True) -> List[Dict[str, Any]]:
     """Функция сортирует по дате"""
 
-    def data_get(item: dict) -> Any:
-        """Функция вспомогающая, для сортировки"""
+    def data_get(item: Dict[str, Any]) -> Any:
+        """Функция вспомагающая, для сортировки"""
         return item["date"]
 
     return sorted(data, key=data_get, reverse=reverse_order)
