@@ -1,27 +1,21 @@
-def mask_account_card(input_string: str) -> str:
-    if "Счет" in input_string:
-        account_number = input_string.split(" ", 1)[1]
-        masked_number = f"**{account_number[-4:]}"
-        return f"Счет {masked_number}"
+from typing import Any, Union
+
+from src.masks import get_mask_account, get_mask_card_number
+
+
+def mask_account_card(numbers: Any) -> Any:
+    """Создаем новую функцию, которая также макскирует номер, но теперь с названием счета (карты)"""
+    new_numbers = numbers.split(" ")
+    if "Счет" in numbers:
+        return f"Счет {get_mask_account(numbers)}"
     else:
-        card_info = input_string.split(" ", 1)
-        card_type = card_info[0]
-        card_number = card_info[1].replace(' ', '')
+        return f"{' '.join(new_numbers[0:-1])} {get_mask_card_number(new_numbers[-1])}"
 
 
-        if len(card_number) >= 16:
-            masked_number = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
-        else:
-            masked_number = f"{'*' * (len(card_number) - 4)}{card_number[-4:]}"
+def get_date(date: Union[str]) -> Union[str, int]:
+    """Создаем функцию, которая возвращает дату в ДД.ММ.ГГГГ"""
 
-        return f"{card_type} {masked_number}"
+    new_data = date.split("T")
+    correct_data = new_data[0].split("-")
 
-def get_mask_card_number(card_input: str) -> str:
-    return mask_account_card(card_input)
-
-def get_mask_account(account_input: str) -> str:
-    return mask_account_card(account_input)
-
-
-print(mask_account_card("Visa Platinum 7000792289606361"))
-print(mask_account_card("Счет 73654108430135874305"))
+    return f"{correct_data[2]}.{correct_data[1]}.{correct_data[0]}"
