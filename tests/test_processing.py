@@ -1,9 +1,12 @@
+from typing import Any, Dict, List
+
 import pytest
+
 from src.processing import filter_by_state, sort_by_date
 
 
 @pytest.fixture
-def sample_data():
+def sample_data() -> List[Dict[str, Any]]:
     """Фикстура для предоставления тестовых данных словарей."""
     return [
         {"id": 1, "state": "EXECUTED", "date": "2023-01-01"},
@@ -13,31 +16,27 @@ def sample_data():
     ]
 
 
-def test_filter_by_state(sample_data):
+def test_filter_by_state(sample_data: List[Dict[str, Any]]) -> None:
     """Тестирование функции filter_by_state на различных статусах."""
 
-    # Проверка фильтрации по состоянию "EXECUTED"
     result = filter_by_state(sample_data, "EXECUTED")
-    assert len(result) == 2  # Должно вернуть 2 элемента
+    assert len(result) == 2
     assert result[0]["id"] == 1
     assert result[1]["id"] == 3
 
-    # Проверка фильтрации по состоянию "PENDING"
     result = filter_by_state(sample_data, "PENDING")
-    assert len(result) == 1  # Должно вернуть 1 элемент
+    assert len(result) == 1
     assert result[0]["id"] == 2
 
-    # Проверка фильтрации по состоянию "CANCELLED"
     result = filter_by_state(sample_data, "CANCELLED")
-    assert len(result) == 1  # Должно вернуть 1 элемент
+    assert len(result) == 1
     assert result[0]["id"] == 4
 
-    # Проверка фильтрации по несуществующему состоянию
     result = filter_by_state(sample_data, "UNKNOWN")
-    assert len(result) == 0  # Не должно вернуть ничего
+    assert len(result) == 0
 
 
-def test_sort_by_date(sample_data):
+def test_sort_by_date(sample_data: List[Dict[str, Any]]) -> None:
     """Тестирование функции sort_by_date на разных форматах данных."""
 
     sorted_data = sort_by_date(sample_data, reverse_order=False)
@@ -46,7 +45,6 @@ def test_sort_by_date(sample_data):
     assert sorted_data[2]["id"] == 3
     assert sorted_data[3]["id"] == 4
 
-    # Проверка сортировки по убыванию
     sorted_data_desc = sort_by_date(sample_data, reverse_order=True)
     assert sorted_data_desc[0]["id"] == 4
     assert sorted_data_desc[1]["id"] == 3
