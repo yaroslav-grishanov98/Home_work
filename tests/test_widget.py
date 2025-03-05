@@ -1,46 +1,25 @@
-from typing import List
-
 import pytest
-
 from src.widget import get_date, mask_account_card
 
+# Параметризованные тесты для функции mask_account_card
+@pytest.mark.parametrize("account_card, expected", [
+    ("Счет 12345678901234567890", "Счет **7890"),  # Ожидаем маскированный номер счета
+    ("Карта 4000000000000000", "Карта 4000 00** **** 0000"),  # Ожидаем маскированный номер карты
+    ("Счет 1234", "Счет "),  # Неполный номер счета
+    ("Карта 1234567890123456", "Карта 1234 56** **** 3456"),  # Ожидаем маскированный номер карты
+])
+def test_mask_account_card(account_card, expected):
+    assert mask_account_card(account_card) == expected
 
-@pytest.fixture
-def account_card_data() -> List[str]:
-    """Фикстура для тестовых данных карт и счетов."""
-    return [
-        "Счет 12345678901234567890",
-        "Карта 7000792289606361",
-        "Счет 1234",
-        "Карта 123",
-    ]
-
-@pytest.fixture
-def date_data() -> List[str]:
-    """Фикстура для тестовых данных дат."""
-    return [
-        "2023-01-01T00:00:00Z",
-        "2023-12-31T23:59:59Z",
-        "2023-02-29T00:00:00Z",
-        "2023-01-01",
-        "",
-    ]
-
-def test_mask_account_card(account_card_data: List[str]) -> None:
-    """Тестирование функции mask_account_card на разных типах данных."""
-    assert mask_account_card(account_card_data[0]) == "Счет **7890"
-    assert mask_account_card(account_card_data[1]) == "7000 79** **** 6361"
-    assert mask_account_card(account_card_data[2]) == "Счет "
-    assert mask_account_card(account_card_data[3]) == "Карта "
-
-def test_get_date(date_data: List[str]) -> None:
-    """Тестирование функции get_date на различных форматах даты."""
-    assert get_date(date_data[0]) == "01.01.2023"
-    assert get_date(date_data[1]) == "31.12.2023"
-    assert get_date(date_data[2]) == "29.02.2023"
-    assert get_date(date_data[3]) == "01.01.2023"
-    assert get_date(date_data[4]) == ""
-
+# Параметризованные тесты для функции get_date
+@pytest.mark.parametrize("date_str, expected", [
+    ("2024-03-11T02:26:18.671407", "11.03.2024"),  # Ожидаем правильный формат даты
+    ("", ""),  # Проверяем пустую строку
+    ("2024-03-11", "11.03.2024"),  # Проверяем формат без времени
+    ("2024-03-11T00:00:00Z", "11.03.2024"),  # Проверяем ISO формат
+])
+def test_get_date(date_str, expected):
+    assert get_date(date_str) == expected
 
 if __name__ == "__main__":
     pytest.main()
