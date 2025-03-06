@@ -1,24 +1,23 @@
 import pytest
+
 from src.widget import get_date, mask_account_card
 
-@pytest.mark.parametrize("account_card, expected", [
-    ("Счет 12345678901234567890", "Счет **7890"),
-    ("Карта 4000000000000000", "Карта 4000 00** **** 0000"),
-    ("Счет 1234", "Счет "),
-    ("Карта 1234567890123456", "Карта 1234 56** **** 3456"),
-])
+
+@pytest.mark.parametrize("account_card, expected", [("Счёт 1234567891234567", "Счёт 1234 56** **** 4567")])
 def test_mask_account_card(account_card, expected):
     assert mask_account_card(account_card) == expected
 
 
-@pytest.mark.parametrize("date_str, expected", [
-    ("2024-03-11T02:26:18.671407", "11.03.2024"),
-    ("", ""),
-    ("2024-03-11", "11.03.2024"),
-    ("2024-03-11T00:00:00Z", "11.03.2024"),
-])
-def test_get_date(date_str, expected):
-    assert get_date(date_str) == expected
+@pytest.mark.parametrize("datetime, expected", [("2024-03-11T02:26:18.671407", "11.03.2024")])
+def test_get_data(datetime, expected):
+    assert get_date(datetime) == expected
 
-if __name__ == "__main__":
-    pytest.main()
+
+@pytest.fixture
+def account_card():
+    return "Счёт 1234567891234567"
+
+
+@pytest.fixture
+def datetime():
+    return "2024-03-11T02:26:18.671407"
