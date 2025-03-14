@@ -1,9 +1,9 @@
-[project]
+[tool.poetry]
 name = "pythonproject5"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Yaroslav",email = "yaroslav.grishanov.98@bk.ru"}
+    {name = "Yaroslav", email = "yaroslav.grishanov.98@bk.ru"}
 ]
 readme = "README.md"
 requires-python = ">=3.13"
@@ -11,6 +11,9 @@ dependencies = [
     "pytest (>=8.3.5,<9.0.0)"
 ]
 
+[tool.poetry.packages]
+# Эта секция должна быть массивом
+packages = [{ include = "src" }]  # Убедитесь, что у вас есть папка 'src' с кодом
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -22,22 +25,17 @@ black = "^25.1.0"
 isort = "^6.0.0"
 mypy = "^1.14.1"
 
-
-
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
 flake8 = "^7.1.1"
 isort = "^6.0.0"
 mypy = "^1.14.1"
 
-
 [tool.black]
-# Максимальная длина строки
 line-length = 119
 exclude = '.git'
 
 [tool.isort]
-# максимальная длина строки
 line_length = 119
 
 [tool.mypy]
