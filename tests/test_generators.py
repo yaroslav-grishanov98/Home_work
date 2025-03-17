@@ -1,14 +1,12 @@
 from typing import Dict, Generator, List
-
 import pytest
 
-
-# Функция для фильтрации по валюте
 def filter_by_currency(transactions: List[Dict], currency_code: str) -> Generator[Dict, None, None]:
+    """Функция, принимающая список словарей с транзакциями и возвращающая итератор,
+    который поочередно выдает транзакции с заданной валютой"""
     for transaction in transactions:
         if transaction.get("operationAmount", {}).get("currency", {}).get("code") == currency_code:
             yield transaction
-
 
 @pytest.fixture
 def transactions() -> List[Dict]:
@@ -18,23 +16,17 @@ def transactions() -> List[Dict]:
         {"id": 3, "operationAmount": {"currency": {"code": "USD"}}},
     ]
 
-
-# Тесты для функции фильтрации валюты
 def test_filter_by_currency(transactions) -> None:
     assert len(list(filter_by_currency(transactions, "USD"))) == 2
     assert len(list(filter_by_currency(transactions, "GBP"))) == 0
     assert len(list(filter_by_currency([], "USD"))) == 0
     assert len(list(filter_by_currency([{"id": 1, "operationAmount": {"currency": {"code": "EUR"}}}], "USD"))) == 0
-
-    # Тест на случаи, когда транзакции отсутствуют
     assert len(list(filter_by_currency(transactions, "EUR"))) == 1
 
-
-# Функция для получения описаний транзакций
 def transaction_descriptions(transactions: List[Dict]) -> Generator[str, None, None]:
+    """Принимает список словарей с транзакциями и возвращает описание каждой операции"""
     for transaction in transactions:
         yield transaction.get("description", "")
-
 
 @pytest.fixture
 def transaction_descriptions_data() -> List[Dict]:
@@ -44,8 +36,6 @@ def transaction_descriptions_data() -> List[Dict]:
         {"description": "Перевод с карты на карту"},
     ]
 
-
-# Тесты для функции транзакций
 def test_transaction_descriptions(transaction_descriptions_data) -> None:
     descriptions = list(transaction_descriptions(transaction_descriptions_data))
     assert descriptions == [
@@ -72,14 +62,11 @@ def test_transaction_descriptions(transaction_descriptions_data) -> None:
         "",
     ]
 
-
-# Генератор для номеров карт
-def card_number_generator(start: int, end: int):
+def card_number_generator(start: int, end: int) -> Generator[str, None, None]:
+    """Выдает номера банковских карт в формате XXXX XXXX XXXX XXXX"""
     for number in range(start, end + 1):
         yield f"{number:04d} {number:04d} {number:04d} {number:04d}"
 
-
-# Тесты для генератора номеров карт
 def test_card_number_generator() -> None:
     generated_numbers = list(card_number_generator(1, 5))
     expected_numbers = [
@@ -97,8 +84,5 @@ def test_card_number_generator() -> None:
     assert len(boundary_numbers) == 9999
     assert all(len(num.replace(" ", "")) == 16 for num in boundary_numbers)
 
-    # Тест на случаи с пустым диапазоном
-    assert list(card_number_generator(5, 1)) == []  # Пустой диапазон
-
-    # Проверка крайних значений
+    assert list(card_number_generator(5, 1)) == []
     assert list(card_number_generator(0, 0)) == ["0000 0000 0000 0000"]
