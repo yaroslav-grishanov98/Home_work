@@ -3,28 +3,29 @@ import pytest
 from src.decorators import log
 
 
-def test_my_function_success(capsys):
+def test_my_function_success():
     """Тестирует успешное выполнение функции с логированием."""
-    @log()
+    logs = []
+
+    @log(logs)
     def my_function(x, y):
         return x + y
 
     result = my_function(1, 2)
 
     assert result == 3
-
-    captured = capsys.readouterr()
-    assert "my_function ok" in captured.out
+    assert "my_function ok" in logs
 
 
-def test_my_function_error(capsys):
+def test_my_function_error():
     """Тестирует функцию, которая вызывает ошибку, с логированием."""
-    @log()
+    logs = []
+
+    @log(logs)
     def faulty_function(x):
         return 1 / x
 
     with pytest.raises(ZeroDivisionError):
         faulty_function(0)
 
-    captured = capsys.readouterr()
-    assert "faulty_function error: ZeroDivisionError. Inputs: (0,), {}" in captured.out
+    assert "faulty_function error: ZeroDivisionError. Inputs: (0,), {}" in logs
