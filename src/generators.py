@@ -1,5 +1,6 @@
 from typing import Dict, Generator, List
 
+
 def filter_by_currency(transactions: List[Dict], currency_code: str) -> Generator[Dict, None, None]:
     """Функция, принимающая список словарей с транзакциями и возвращающая итератор,
     который поочередно выдает транзакции с заданной валютой"""
@@ -19,6 +20,3 @@ def card_number_generator(start: int, end: int) -> Generator[str, None, None]:
     for number in range(start, end + 1):
         card_number = f"{number:016d}"
         yield f"{card_number[:4]} {card_number[4:8]} {card_number[8:12]} {card_number[12:16]}"
-
-
-
