@@ -1,5 +1,7 @@
 from typing import Dict, Generator, List
+
 import pytest
+
 
 def filter_by_currency(transactions: List[Dict], currency_code: str) -> Generator[Dict, None, None]:
     """Функция, принимающая список словарей с транзакциями и возвращающая итератор,

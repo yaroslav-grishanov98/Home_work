@@ -1,6 +1,6 @@
 import pytest
-from src.decorators import log
 
+from src.decorators import log
 
 
 @log()
