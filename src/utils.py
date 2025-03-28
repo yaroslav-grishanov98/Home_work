@@ -28,15 +28,22 @@ def load_transactions(file_path):
 
 def convert_transaction_to_rub(transaction):
     """Возвращает сумму в рублях."""
-    amount = float(transaction['operationAmount']['amount'])
-    currency = transaction['operationAmount']['currency']['code']
+    try:
+        amount = float(transaction['operationAmount']['amount'])
+        currency = transaction['operationAmount']['currency']['code']
 
-    if currency == 'RUB':
-        return amount
-    else:
+        if currency == 'RUB':
+            return amount
+
+        if currency not in ['USD', 'EUR']:
+            raise ValueError(f"Неподдерживаемая валюта: {currency}")
+
         exchange_rate = get_exchange_rate(currency)
-        if exchange_rate:
-            return amount / exchange_rate
-        else:
-            print(f"Не удалось получить курс для {currency}")
-            return 0.0
+        if exchange_rate is None:
+            raise ValueError(f"Не удалось получить курс для валюты {currency}")
+
+        return round(amount * exchange_rate, 2)
+
+    except (KeyError, ValueError) as e:
+        raise ValueError(f"Ошибка при конвертации: {str(e)}")
+
