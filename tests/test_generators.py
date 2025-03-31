@@ -10,6 +10,7 @@ def filter_by_currency(transactions: List[Dict], currency_code: str) -> Generato
         if transaction.get("operationAmount", {}).get("currency", {}).get("code") == currency_code:
             yield transaction
 
+
 @pytest.fixture
 def transactions() -> List[Dict]:
     return [
@@ -18,6 +19,7 @@ def transactions() -> List[Dict]:
         {"id": 3, "operationAmount": {"currency": {"code": "USD"}}},
     ]
 
+
 def test_filter_by_currency(transactions) -> None:
     assert len(list(filter_by_currency(transactions, "USD"))) == 2
     assert len(list(filter_by_currency(transactions, "GBP"))) == 0
@@ -25,10 +27,12 @@ def test_filter_by_currency(transactions) -> None:
     assert len(list(filter_by_currency([{"id": 1, "operationAmount": {"currency": {"code": "EUR"}}}], "USD"))) == 0
     assert len(list(filter_by_currency(transactions, "EUR"))) == 1
 
+
 def transaction_descriptions(transactions: List[Dict]) -> Generator[str, None, None]:
     """Принимает список словарей с транзакциями и возвращает описание каждой операции"""
     for transaction in transactions:
         yield transaction.get("description", "")
+
 
 @pytest.fixture
 def transaction_descriptions_data() -> List[Dict]:
@@ -37,6 +41,7 @@ def transaction_descriptions_data() -> List[Dict]:
         {"description": "Перевод со счета на счет"},
         {"description": "Перевод с карты на карту"},
     ]
+
 
 def test_transaction_descriptions(transaction_descriptions_data) -> None:
     descriptions = list(transaction_descriptions(transaction_descriptions_data))
@@ -64,10 +69,12 @@ def test_transaction_descriptions(transaction_descriptions_data) -> None:
         "",
     ]
 
+
 def card_number_generator(start: int, end: int) -> Generator[str, None, None]:
     """Выдает номера банковских карт в формате XXXX XXXX XXXX XXXX"""
     for number in range(start, end + 1):
         yield f"{number:04d} {number:04d} {number:04d} {number:04d}"
+
 
 def test_card_number_generator() -> None:
     generated_numbers = list(card_number_generator(1, 5))
