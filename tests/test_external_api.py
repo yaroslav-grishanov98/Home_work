@@ -20,7 +20,6 @@ class TestExchangeRate(unittest.TestCase):
         result = get_exchange_rate("USD")
 
         self.assertEqual(result, 75.0)
-
         mock_requests_get.assert_called_once()
         call_args = mock_requests_get.call_args
         self.assertEqual(call_args[1]["headers"], {"apikey": "fake_api_key"})
@@ -50,4 +49,3 @@ class TestExchangeRate(unittest.TestCase):
 
         result = get_exchange_rate("USD")
         self.assertIsNone(result)
-
