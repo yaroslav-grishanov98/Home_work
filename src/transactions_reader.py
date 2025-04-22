@@ -4,7 +4,7 @@ from typing import Dict, List
 import pandas as pd
 
 
-def read_csv_transactions(file_path: str = 'data/transactions.csv') -> List[Dict]:
+def read_csv_transactions(file_path: str = 'data/transactions.csv.csv') -> List[Dict]:
     """Чтение файла CSV"""
     try:
         transactions = []
@@ -24,7 +24,7 @@ def read_csv_transactions(file_path: str = 'data/transactions.csv') -> List[Dict
 
 
 def read_excel_transactions(
-    file_path: str = 'data/transactions_excel.xlsx'
+    file_path: str = 'data/transactions_excel.xlsx.xlsx'
 ) -> List[Dict]:
     """Чтение файла excel"""
     try:

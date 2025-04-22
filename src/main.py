@@ -5,8 +5,10 @@ from src.decorators import log
 from src.filter_transactions import filter_transactions_by_description
 from src.generators import filter_by_currency
 from src.processing import filter_by_state, sort_by_date
+from src.transactions_reader import read_csv_transactions, read_excel_transactions
 from src.utils import load_transactions
 from src.widget import get_date, mask_account_card
+
 
 
 @log(file_name="operations.log")
@@ -24,14 +26,17 @@ def main() -> None:
         if choice == '1':
             file_path = "../data/operations.json"
             print("\nДля обработки выбран JSON-файл.")
+            transactions = load_transactions(file_path)
             break
         elif choice == '2':
-            file_path = "../data/operations.csv"
+            file_path = "../data/transactions.csv"
             print("\nДля обработки выбран CSV-файл.")
+            transactions = read_csv_transactions(file_path)
             break
         elif choice == '3':
-            file_path = "../data/operations.xlsx"
+            file_path = "../data/transactions_excel.xlsx"
             print("\nДля обработки выбран XLSX-файл.")
+            transactions = read_excel_transactions(file_path)
             break
         print("Некорректный выбор. Пожалуйста, введите 1, 2 или 3.")
 
