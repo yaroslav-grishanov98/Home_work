@@ -32,6 +32,8 @@ def main() -> None:
             file_path = "../data/transactions.csv"
             print("\nДля обработки выбран CSV-файл.")
             transactions = read_csv_transactions(file_path)
+            #print(f"Содержимое transactions: {transactions}")
+            #print(f"Тип переменной transactions: {type(transactions)}")
             break
         elif choice == '3':
             file_path = "../data/transactions_excel.xlsx"
@@ -40,7 +42,6 @@ def main() -> None:
             break
         print("Некорректный выбор. Пожалуйста, введите 1, 2 или 3.")
 
-    transactions = load_transactions(file_path)
 
     while True:
         print("\nВведите статус для фильтрацию.")

@@ -1,19 +1,32 @@
 import csv
-from typing import Dict, List
+from typing import Dict, List, Any
 
 import pandas as pd
 
 
-def read_csv_transactions(file_path: str = 'data/transactions.csv.csv') -> List[Dict]:
-    """Чтение файла CSV"""
+def read_csv_transactions(file_path: str = 'data/transactions.csv') -> List[Dict]:
+    """Чтение и преобразование данных из CSV-файла банковских транзакций"""
     try:
         transactions = []
         with open(file_path, 'r', encoding='utf-8') as csvfile:
-            csv_reader = csv.DictReader(csvfile)
+            csv_reader = csv.DictReader(csvfile, delimiter=';')
             for row in csv_reader:
-                transactions.append({
-                    key: _convert_value(value) for key, value in row.items()
-                })
+                transaction = {
+                    'id': row.get('id'),
+                    'state': row.get('state'),
+                    'date': row.get('date'),
+                    'description': row.get('description'),
+                    'from': row.get('from', ''),
+                    'to': row.get('to'),
+                    'operationAmount': {
+                        'amount': _convert_value(row.get('amount')),
+                        'currency': {
+                            'name': row.get('currency_name'),
+                            'code': row.get('currency_code')
+                        }
+                    }
+                }
+                transactions.append(transaction)
         return transactions
     except FileNotFoundError:
         print(f"File not found: {file_path}")
@@ -24,17 +37,31 @@ def read_csv_transactions(file_path: str = 'data/transactions.csv.csv') -> List[
 
 
 def read_excel_transactions(
-    file_path: str = 'data/transactions_excel.xlsx.xlsx'
+        file_path: str = 'data/transactions_excel.xlsx'
 ) -> List[Dict]:
-    """Чтение файла excel"""
+    """Чтение и преобразование данных из Excel-файла банковских транзакций"""
     try:
-        dataframe = pd.read_excel(file_path)
-        transactions = dataframe.to_dict('records')
+        dataframe = pd.read_excel(file_path, engine='openpyxl')
+        raw_transactions = dataframe.to_dict('records')
 
-        transactions = [
-            {key: _convert_value(value) for key, value in transaction.items()}
-            for transaction in transactions
-        ]
+        transactions = []
+        for row in raw_transactions:
+            transaction = {
+                'id': row.get('id'),
+                'state': row.get('state'),
+                'date': row.get('date'),
+                'description': row.get('description'),
+                'from': row.get('from', ''),
+                'to': row.get('to'),
+                'operationAmount': {
+                    'amount': _convert_value(row.get('amount')),
+                    'currency': {
+                        'name': row.get('currency_name'),
+                        'code': row.get('currency_code')
+                    }
+                }
+            }
+            transactions.append(transaction)
 
         return transactions
     except FileNotFoundError:
@@ -45,8 +72,8 @@ def read_excel_transactions(
         return []
 
 
-def _convert_value(value):
-    """Преобразование значений для данных"""
+def _convert_value(value: Any) -> Any:
+    """Преобразование значений для корректного представления данных"""
     if isinstance(value, str):
         value = value.strip()
         try:
