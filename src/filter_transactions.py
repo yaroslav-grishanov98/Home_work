@@ -28,23 +28,8 @@ def count_transactions_by_categories(
     if not categories:
         return {}
 
-    counter = Counter({category: 0 for category in categories})
-
-    category_mapping = {
-        'Переводы': ['перевод'],
-        'Оплата': ['оплата'],
-        'Другое': ['прочее']
-    }
-
-    for transaction in transactions:
-        description = transaction.get('description')
-        if description is None:
-            continue
-
-        description = description.lower()
-
-        for category, patterns in category_mapping.items():
-            if any(pattern in description for pattern in patterns):
-                counter[category] += 1
-
-    return dict(counter)
+    return dict(Counter(
+        transaction.get('description')
+        for transaction in transactions
+        if transaction.get('description') in categories
+    ))

@@ -78,51 +78,65 @@ def test_filter_transactions_by_description_none_description(test_transactions):
     assert all(transaction.get("description") is not None for transaction in result)
 
 
-def test_count_transactions_by_categories_basic(test_transactions, test_categories):
-    """Тест базового подсчета категорий"""
-    result = count_transactions_by_categories(test_transactions, test_categories)
-    assert result["Переводы"] == 2
-    assert result["Оплата"] == 1
-    assert result["Другое"] == 0
-
-
-def test_count_transactions_by_categories_empty_transactions(test_categories):
-    """Тест с пустым списком транзакций"""
-    result = count_transactions_by_categories([], test_categories)
-    assert all(count == 0 for count in result.values())
-
-
-def test_count_transactions_by_categories_empty_categories(test_transactions):
-    """Тест с пустым списком категорий"""
-    result = count_transactions_by_categories(test_transactions, [])
-    assert result == {}
-
-
-def test_count_transactions_by_categories_case_insensitive(test_categories):
-    """Тест подсчета без учета регистра"""
+def test_empty_categories():
     transactions = [
-        {"description": "ПЕРЕВОД ОРГАНИЗАЦИИ"},
-        {"description": "перевод между счетами"},
+        {'description': 'перевод'},
+        {'description': 'оплата'},
     ]
-    result = count_transactions_by_categories(transactions, test_categories)
-    assert result["Переводы"] == 2
+    categories = []
+    assert count_transactions_by_categories(transactions, categories) == {}
 
-
-def test_count_transactions_by_categories_none_description(test_categories):
-    """Тест с None в описании"""
+def test_no_matching_transactions():
     transactions = [
-        {"description": None},
-        {"description": "Перевод"},
+        {'description': 'покупка'},
+        {'description': 'зарплата'},
     ]
-    result = count_transactions_by_categories(transactions, test_categories)
-    assert result["Переводы"] == 1
+    categories = ['перевод', 'оплата']
+    assert count_transactions_by_categories(transactions, categories) == {}
 
-
-def test_count_transactions_by_categories_missing_description(test_categories):
-    """Тест с отсутствующим ключом description"""
+def test_single_matching_transaction():
     transactions = [
-        {"amount": 100},
-        {"description": "Перевод"}
+        {'description': 'перевод'},
+        {'description': 'покупка'},
     ]
-    result = count_transactions_by_categories(transactions, test_categories)
-    assert result["Переводы"] == 1
+    categories = ['перевод']
+    assert count_transactions_by_categories(transactions, categories) == {'перевод': 1}
+
+def test_multiple_matching_transactions():
+    transactions = [
+        {'description': 'перевод'},
+        {'description': 'перевод'},
+        {'description': 'покупка'},
+    ]
+    categories = ['перевод']
+    assert count_transactions_by_categories(transactions, categories) == {'перевод': 2}
+
+def test_multiple_categories():
+    transactions = [
+        {'description': 'перевод'},
+        {'description': 'оплата'},
+        {'description': 'перевод'},
+        {'description': 'покупка'},
+    ]
+    categories = ['перевод', 'оплата']
+    assert count_transactions_by_categories(transactions, categories) == {
+        'перевод': 2,
+        'оплата': 1
+    }
+
+def test_transactions_with_none_description():
+    transactions = [
+        {'description': 'перевод'},
+        {'description': None},
+        {'description': 'перевод'},
+    ]
+    categories = ['перевод']
+    assert count_transactions_by_categories(transactions, categories) == {'перевод': 2}
+
+def test_case_sensitivity():
+    transactions = [
+        {'description': 'Перевод'},
+        {'description': 'перевод'},
+    ]
+    categories = ['перевод']
+    assert count_transactions_by_categories(transactions, categories) == {'перевод': 1}

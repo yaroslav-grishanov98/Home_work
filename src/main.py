@@ -22,10 +22,18 @@ def main() -> None:
 
         choice = input()
         if choice == '1':
-            file_path = "operations.json"
+            file_path = "../data/operations.json"
             print("\nДля обработки выбран JSON-файл.")
             break
-        print("В текущей версии поддерживается только JSON формат.")
+        elif choice == '2':
+            file_path = "../data/operations.csv"
+            print("\nДля обработки выбран CSV-файл.")
+            break
+        elif choice == '3':
+            file_path = "../data/operations.xlsx"
+            print("\nДля обработки выбран XLSX-файл.")
+            break
+        print("Некорректный выбор. Пожалуйста, введите 1, 2 или 3.")
 
     transactions = load_transactions(file_path)
 
