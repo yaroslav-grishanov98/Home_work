@@ -1,14 +1,9 @@
 from typing import Any, Dict, Iterable, List
 
 
-def filter_by_state(list_dictionary: List[Dict[str, Any]], state_word: str = "EXECUTED") -> List[Dict[str, Any]]:
-    """Функция перебирает список словарей по ключу"""
-
-    dict_state: List[Dict[str, Any]] = []
-    for elem in list_dictionary:
-        if elem["state"] == state_word:
-            dict_state.append(elem)
-    return dict_state
+def filter_by_state(transactions: List[Dict], state_word: str) -> List[Dict]:
+    """Фильтрует список транзакций по указанному статусу"""
+    return [elem for elem in transactions if elem.get("state") == state_word]
 
 
 def sort_by_date(data: Iterable[Dict[str, Any]], reverse_order: bool = True) -> List[Dict[str, Any]]:
